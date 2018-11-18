@@ -11,14 +11,12 @@
     <tr>
         <td>Recipe ID</td>
         <td>Recipe Title</td>
-        <td>Recipe Content</td>
+        <td>Contents</td>
     </tr>
     </thead>
     <tbody>
     <tr th:each="recipe : ${recipes}">
         <td th:text="${recipe.id}">id</td>
-        <td th:text="${recipe.title}">title</td>
-        <td th:text="${recipe.content}">content</td>
     </tr>
     </tbody>
 </table>
