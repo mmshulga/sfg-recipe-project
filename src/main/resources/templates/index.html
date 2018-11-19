@@ -6,6 +6,15 @@
 </head>
 <body>
 <h1 th:text="'Index page'">Index page</h1>
-
+<table>
+    <tr>
+        <th>ID</th>
+        <th>Description</th>
+    </tr>
+    <tr th:each="recipe : ${recipes}">
+        <td th:text="${recipe.id}">id goes here</td>
+        <td th:text="${recipe.description}">Description goes here</td>
+    </tr>
+</table>
 </body>
 </html>
