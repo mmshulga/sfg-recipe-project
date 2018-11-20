@@ -1,5 +1,6 @@
 package my.mmshulga.sfgrecipeproject.bootstrap;
 
+import lombok.extern.slf4j.Slf4j;
 import my.mmshulga.sfgrecipeproject.model.*;
 import my.mmshulga.sfgrecipeproject.repositories.CategoryRepository;
 import my.mmshulga.sfgrecipeproject.repositories.RecipeRepository;
@@ -14,6 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+@Slf4j
 @Component
 public class RecipeBootstrap implements ApplicationListener<ContextRefreshedEvent> {
     private final CategoryRepository categoryRepository;
@@ -29,7 +31,9 @@ public class RecipeBootstrap implements ApplicationListener<ContextRefreshedEven
 
     @Override
     public void onApplicationEvent(ContextRefreshedEvent event) {
+        log.debug("starting bootstrap");
         recipeRepository.saveAll(getRecipes());
+        log.debug("bootstrap loaded data");
     }
 
     private List<Recipe> getRecipes() {
