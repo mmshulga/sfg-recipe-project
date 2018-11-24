@@ -7,6 +7,7 @@ import my.mmshulga.sfgrecipeproject.converters.IngredientToIngredientCommand;
 import my.mmshulga.sfgrecipeproject.model.Ingredient;
 import my.mmshulga.sfgrecipeproject.model.Recipe;
 import my.mmshulga.sfgrecipeproject.model.UnitOfMeasure;
+import my.mmshulga.sfgrecipeproject.repositories.IngredientRepository;
 import my.mmshulga.sfgrecipeproject.repositories.RecipeRepository;
 import my.mmshulga.sfgrecipeproject.repositories.UnitOfMeasureRepository;
 import my.mmshulga.sfgrecipeproject.services.IngredientService;
@@ -19,16 +20,19 @@ import java.util.Optional;
 @Service
 public class IngredientServiceImpl implements IngredientService {
 
+    private final IngredientRepository ingredientRepository;
     private final RecipeRepository recipeRepository;
     private final UnitOfMeasureRepository uomRepository;
     private final IngredientToIngredientCommand ingredientToIngredientCommand;
     private final IngredientCommandToIngredient ingredientCommandToIngredient;
 
     @Autowired
-    public IngredientServiceImpl(RecipeRepository recipeRepository,
+    public IngredientServiceImpl(IngredientRepository ingredientRepository,
+                                 RecipeRepository recipeRepository,
                                  UnitOfMeasureRepository uomRepository,
                                  IngredientToIngredientCommand ingredientToIngredientCommand,
                                  IngredientCommandToIngredient ingredientCommandToIngredient) {
+        this.ingredientRepository = ingredientRepository;
         this.recipeRepository = recipeRepository;
         this.uomRepository = uomRepository;
         this.ingredientToIngredientCommand = ingredientToIngredientCommand;
@@ -92,5 +96,10 @@ public class IngredientServiceImpl implements IngredientService {
                 .orElseThrow(() -> new RuntimeException("not supposed to happen"));
 
         return ingredientToIngredientCommand.convert(savedIngredient);
+    }
+
+    @Override
+    public void deleteById(Long id) {
+        ingredientRepository.deleteById(id);
     }
 }
