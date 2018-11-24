@@ -44,7 +44,7 @@ public class IngredientServiceImpl implements IngredientService {
         Optional<IngredientCommand> found = recipe.getIngredients()
                 .stream()
                 .filter(i -> i.getId().equals(ingredientId))
-                .map(i -> ingredientToIngredientCommand.convert(i))
+                .map(ingredientToIngredientCommand::convert)
                 .findFirst();
 
         return found.orElseThrow(() -> {
@@ -77,13 +77,17 @@ public class IngredientServiceImpl implements IngredientService {
             ingredient.setUom(ingredientUom);
         }
         else {
-            recipe.addIngredient(ingredientCommandToIngredient.convert(command));
+            Ingredient converted = ingredientCommandToIngredient.convert(command);
+            converted.setRecipe(recipe);
+            recipe.addIngredient(converted);
         }
 
         Recipe savedRecipe = recipeRepository.save(recipe);
         Ingredient savedIngredient = savedRecipe.getIngredients()
                 .stream()
-                .filter(i -> i.getId().equals(command.getId()))
+                .filter(ri -> ri.getAmount().equals(command.getAmount()))
+                .filter(ri -> ri.getDescription().equals(command.getDescription()))
+//                .filter(ri -> ri.getUom().getId().equals(command.getId()))
                 .findFirst()
                 .orElseThrow(() -> new RuntimeException("not supposed to happen"));
 
