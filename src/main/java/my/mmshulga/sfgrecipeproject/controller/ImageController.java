@@ -1,8 +1,10 @@
 package my.mmshulga.sfgrecipeproject.controller;
 
+import my.mmshulga.sfgrecipeproject.commands.RecipeCommand;
 import my.mmshulga.sfgrecipeproject.model.Recipe;
 import my.mmshulga.sfgrecipeproject.services.ImageService;
 import my.mmshulga.sfgrecipeproject.services.RecipeService;
+import org.apache.tomcat.util.http.fileupload.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -11,6 +13,13 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
+
+import javax.servlet.http.HttpServletResponse;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+
+import static my.mmshulga.sfgrecipeproject.utils.Utils.unboxArrayOfBytes;
 
 @Controller
 public class ImageController {
@@ -34,5 +43,17 @@ public class ImageController {
     public String attachImage(@PathVariable String id, @RequestParam("imagefile") MultipartFile file) {
         imageService.attachImage(Long.valueOf(id), file);
         return "redirect:/recipe/" + id + "/show";
+    }
+
+    @GetMapping("recipe/{id}/recipeimage")
+    public void getImage(@PathVariable String id, HttpServletResponse response) throws IOException {
+        RecipeCommand recipeCommand = recipeService.findCommandById(Long.valueOf(id));
+        if (recipeCommand.getImage() != null) {
+            byte[] imageBytes = unboxArrayOfBytes(recipeCommand.getImage());
+            response.setContentType("image/jpeg");
+            try (InputStream is = new ByteArrayInputStream(imageBytes)) {
+                IOUtils.copy(is, response.getOutputStream());
+            }
+        }
     }
 }

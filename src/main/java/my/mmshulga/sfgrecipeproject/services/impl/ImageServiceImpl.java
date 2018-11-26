@@ -10,6 +10,9 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.Optional;
+
+import static my.mmshulga.sfgrecipeproject.utils.Utils.boxArrayOfBytes;
 
 @Slf4j
 @Service
@@ -29,10 +32,14 @@ public class ImageServiceImpl implements ImageService {
         try {
             Byte[] bytes = boxArrayOfBytes(file.getBytes());
 
-            Recipe recipe = recipeRepository.findById(recipeId).orElseThrow(() -> {
-                log.error("no recipe with id " + recipeId + " exists.");
-                throw new RuntimeException("error attaching image to recipe!");
-            });
+            Optional<Recipe> optionalRecipe = recipeRepository.findById(recipeId);
+            if (!optionalRecipe.isPresent()) {
+                log.debug("could not find recipe with id " + recipeId);
+                return;
+            }
+
+            Recipe recipe = optionalRecipe.get();
+
 
             recipe.setImage(bytes);
             recipeRepository.save(recipe);
@@ -42,12 +49,5 @@ public class ImageServiceImpl implements ImageService {
         }
     }
 
-    private static Byte[] boxArrayOfBytes(byte[] bytes) {
-        int length = bytes.length;
-        Byte[] boxed = new Byte[length];
-        for (int i = 0; i < length; i++) {
-            boxed[i] = bytes[i];
-        }
-        return boxed;
-    }
+
 }
