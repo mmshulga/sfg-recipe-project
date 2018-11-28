@@ -13,8 +13,16 @@ public abstract class ErrorHandlingBaseController {
     @ExceptionHandler(NotFoundException.class)
     public ModelAndView notFoundHandler(Exception exception) {
         log.error("not found occurred");
-        ModelAndView mav = new ModelAndView();
-        mav.setViewName("404error");
+        ModelAndView mav = new ModelAndView("404error");
+        mav.addObject("exception", exception);
+        return mav;
+    }
+
+    @ResponseStatus(code = HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(NumberFormatException.class)
+    public ModelAndView numberFormatHandler(Exception exception) {
+        log.error("bad format exception occurred");
+        ModelAndView mav = new ModelAndView("400error");
         mav.addObject("exception", exception);
         return mav;
     }
