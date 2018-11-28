@@ -4,16 +4,16 @@ import lombok.extern.slf4j.Slf4j;
 import my.mmshulga.sfgrecipeproject.commands.IngredientCommand;
 import my.mmshulga.sfgrecipeproject.commands.RecipeCommand;
 import my.mmshulga.sfgrecipeproject.commands.UnitOfMeasureCommand;
+import my.mmshulga.sfgrecipeproject.exceptions.NotFoundException;
 import my.mmshulga.sfgrecipeproject.services.IngredientService;
 import my.mmshulga.sfgrecipeproject.services.RecipeService;
 import my.mmshulga.sfgrecipeproject.services.UOMService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.ModelAndView;
 
 @Slf4j
 @Controller
@@ -87,5 +87,14 @@ public class IngredientController {
     public String deleteIngredient(@PathVariable String recipeId, @PathVariable String id) {
         ingredientService.deleteById(Long.valueOf(id));
         return "redirect:/recipe/" + recipeId + "/ingredients";
+    }
+
+    @ResponseStatus(code = HttpStatus.NOT_FOUND)
+    @ExceptionHandler(NotFoundException.class)
+    public ModelAndView notFoundHandler() {
+        log.error("not found occurred");
+        ModelAndView mav = new ModelAndView();
+        mav.setViewName("404error");
+        return mav;
     }
 }
