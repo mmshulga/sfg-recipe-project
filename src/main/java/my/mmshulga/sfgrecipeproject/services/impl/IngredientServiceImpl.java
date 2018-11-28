@@ -4,6 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import my.mmshulga.sfgrecipeproject.commands.IngredientCommand;
 import my.mmshulga.sfgrecipeproject.converters.IngredientCommandToIngredient;
 import my.mmshulga.sfgrecipeproject.converters.IngredientToIngredientCommand;
+import my.mmshulga.sfgrecipeproject.exceptions.NotFoundException;
 import my.mmshulga.sfgrecipeproject.model.Ingredient;
 import my.mmshulga.sfgrecipeproject.model.Recipe;
 import my.mmshulga.sfgrecipeproject.model.UnitOfMeasure;
@@ -60,12 +61,7 @@ public class IngredientServiceImpl implements IngredientService {
     @Override
     public IngredientCommand saveIngredientCommand(IngredientCommand command) {
         Optional<Recipe> optionalRecipe = recipeRepository.findById(command.getRecipeId());
-        if (!optionalRecipe.isPresent()) {
-            log.debug("no such recipe with id" + command.getRecipeId());
-            throw new RuntimeException("no such recipe with id " + command.getRecipeId());
-        }
-
-        Recipe recipe = optionalRecipe.get();
+        Recipe recipe = optionalRecipe.orElseThrow(() -> new NotFoundException("Recipe does not exist"));
         Optional<Ingredient> optionalIngredient = recipe.getIngredients()
                 .stream()
                 .filter(i -> i.getRecipe().getId().equals(command.getId()))
@@ -73,7 +69,7 @@ public class IngredientServiceImpl implements IngredientService {
 
         if (optionalIngredient.isPresent()) {
             UnitOfMeasure ingredientUom = uomRepository.findById(command.getUom().getId())
-                    .orElseThrow(() -> new RuntimeException("no existing uom found"));
+                    .orElseThrow(() -> new NotFoundException("no existing uom found"));
 
             Ingredient ingredient = optionalIngredient.get();
             ingredient.setDescription(command.getDescription());

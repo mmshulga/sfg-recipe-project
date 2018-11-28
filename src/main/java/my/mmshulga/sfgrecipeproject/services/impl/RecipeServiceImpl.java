@@ -4,6 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import my.mmshulga.sfgrecipeproject.commands.RecipeCommand;
 import my.mmshulga.sfgrecipeproject.converters.RecipeCommandToRecipe;
 import my.mmshulga.sfgrecipeproject.converters.RecipeToRecipeCommand;
+import my.mmshulga.sfgrecipeproject.exceptions.NotFoundException;
 import my.mmshulga.sfgrecipeproject.model.Recipe;
 import my.mmshulga.sfgrecipeproject.repositories.RecipeRepository;
 import my.mmshulga.sfgrecipeproject.services.RecipeService;
@@ -39,7 +40,7 @@ public class RecipeServiceImpl implements RecipeService {
 
     @Override
     public Recipe findById(Long id) {
-        return recipeRepository.findById(id).orElseThrow(() -> new RuntimeException("Recipe not found!"));
+        return recipeRepository.findById(id).orElseThrow(() -> new NotFoundException("Recipe not found!"));
     }
 
     @Override

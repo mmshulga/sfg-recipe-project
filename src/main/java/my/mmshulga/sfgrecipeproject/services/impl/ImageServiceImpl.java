@@ -1,6 +1,7 @@
 package my.mmshulga.sfgrecipeproject.services.impl;
 
 import lombok.extern.slf4j.Slf4j;
+import my.mmshulga.sfgrecipeproject.exceptions.NotFoundException;
 import my.mmshulga.sfgrecipeproject.model.Recipe;
 import my.mmshulga.sfgrecipeproject.repositories.RecipeRepository;
 import my.mmshulga.sfgrecipeproject.services.ImageService;
@@ -33,13 +34,7 @@ public class ImageServiceImpl implements ImageService {
             Byte[] bytes = boxArrayOfBytes(file.getBytes());
 
             Optional<Recipe> optionalRecipe = recipeRepository.findById(recipeId);
-            if (!optionalRecipe.isPresent()) {
-                log.debug("could not find recipe with id " + recipeId);
-                return;
-            }
-
-            Recipe recipe = optionalRecipe.get();
-
+            Recipe recipe = optionalRecipe.orElseThrow(() -> new NotFoundException("no such recipe"));
 
             recipe.setImage(bytes);
             recipeRepository.save(recipe);
@@ -48,6 +43,4 @@ public class ImageServiceImpl implements ImageService {
             throw new RuntimeException(e);
         }
     }
-
-
 }
