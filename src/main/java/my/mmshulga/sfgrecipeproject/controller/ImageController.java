@@ -61,10 +61,11 @@ public class ImageController {
 
     @ResponseStatus(code = HttpStatus.NOT_FOUND)
     @ExceptionHandler(NotFoundException.class)
-    public ModelAndView notFoundHandler() {
+    public ModelAndView notFoundHandler(Exception exception) {
         log.error("not found occurred");
         ModelAndView mav = new ModelAndView();
         mav.setViewName("404error");
+        mav.addObject("exception", exception);
         return mav;
     }
 }

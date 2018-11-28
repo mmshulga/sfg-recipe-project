@@ -34,7 +34,7 @@ public class ImageServiceImpl implements ImageService {
             Byte[] bytes = boxArrayOfBytes(file.getBytes());
 
             Optional<Recipe> optionalRecipe = recipeRepository.findById(recipeId);
-            Recipe recipe = optionalRecipe.orElseThrow(() -> new NotFoundException("no such recipe"));
+            Recipe recipe = optionalRecipe.orElseThrow(() -> new NotFoundException("no recipe found for id " + recipeId));
 
             recipe.setImage(bytes);
             recipeRepository.save(recipe);

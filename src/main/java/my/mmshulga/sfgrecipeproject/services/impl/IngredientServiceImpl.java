@@ -44,7 +44,7 @@ public class IngredientServiceImpl implements IngredientService {
     public IngredientCommand findByRecipeAndId(Long recipeId, Long ingredientId) {
         Recipe recipe = recipeRepository.findById(recipeId).orElseThrow(() -> {
             log.error("recipe with id " + recipeId + " not found");
-            return new RuntimeException("recipe not found");
+            return new NotFoundException("recipe not found for id " + recipeId);
         });
         Optional<IngredientCommand> found = recipe.getIngredients()
                 .stream()
@@ -54,7 +54,7 @@ public class IngredientServiceImpl implements IngredientService {
 
         return found.orElseThrow(() -> {
             log.error("ingredient with id " + ingredientId + " not found");
-            return new RuntimeException("ingredient not found");
+            return new NotFoundException("ingredient not found for id " + ingredientId);
         });
     }
 
@@ -67,9 +67,10 @@ public class IngredientServiceImpl implements IngredientService {
                 .filter(i -> i.getRecipe().getId().equals(command.getId()))
                 .findFirst();
 
+        Long uomId = command.getUom().getId();
         if (optionalIngredient.isPresent()) {
-            UnitOfMeasure ingredientUom = uomRepository.findById(command.getUom().getId())
-                    .orElseThrow(() -> new NotFoundException("no existing uom found"));
+            UnitOfMeasure ingredientUom = uomRepository.findById(uomId)
+                    .orElseThrow(() -> new NotFoundException("uom not found for id " + uomId));
 
             Ingredient ingredient = optionalIngredient.get();
             ingredient.setDescription(command.getDescription());
