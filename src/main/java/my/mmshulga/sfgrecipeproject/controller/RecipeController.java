@@ -2,19 +2,19 @@ package my.mmshulga.sfgrecipeproject.controller;
 
 import lombok.extern.slf4j.Slf4j;
 import my.mmshulga.sfgrecipeproject.commands.RecipeCommand;
-import my.mmshulga.sfgrecipeproject.exceptions.NotFoundException;
 import my.mmshulga.sfgrecipeproject.model.Recipe;
 import my.mmshulga.sfgrecipeproject.services.RecipeService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 
 @Slf4j
 @Controller
-public class RecipeController {
+public class RecipeController extends ErrorHandlingBaseController {
     private final RecipeService recipeService;
 
     @Autowired
@@ -51,15 +51,5 @@ public class RecipeController {
     public String deleteRecipe(@PathVariable String id){
         recipeService.deleteById(Long.valueOf(id));
         return  "redirect:/";
-    }
-
-    @ResponseStatus(code = HttpStatus.NOT_FOUND)
-    @ExceptionHandler(NotFoundException.class)
-    public ModelAndView notFoundHandler(Exception exception) {
-        log.error("not found occurred");
-        ModelAndView mav = new ModelAndView();
-        mav.setViewName("404error");
-        mav.addObject("exception", exception);
-        return mav;
     }
 }
