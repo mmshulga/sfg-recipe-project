@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 @Slf4j
 @Controller
 public class IngredientController {
+    public static final String INGREDIENT_FORM = "recipe/ingredient/ingredientform";
     private final RecipeService recipeService;
     private final IngredientService ingredientService;
     private final UOMService uomService;
@@ -62,14 +63,15 @@ public class IngredientController {
 
         model.addAttribute("uomList",  uomService.listAll());
 
-        return "recipe/ingredient/ingredientform";
+        return INGREDIENT_FORM;
     }
 
     @PostMapping("/recipe/{recipeId}/ingredient/{id}/update")
     public String updateIngredient(@PathVariable String recipeId, @PathVariable String id, Model model) {
-        model.addAttribute("ingredient", ingredientService.findByRecipeAndId(Long.valueOf(recipeId), Long.valueOf(id)));
+        model.addAttribute("ingredient",
+                ingredientService.findByRecipeAndId(Long.valueOf(recipeId), Long.valueOf(id)));
         model.addAttribute("uomList", uomService.listAll());
-        return "recipe/ingredient/ingredientform";
+        return INGREDIENT_FORM;
     }
 
     @PostMapping("recipe/{recipeId}/ingredient")
