@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 
 @Slf4j
 @Controller
-public class IngredientController extends ErrorHandlingBaseController {
+public class IngredientController {
     private final RecipeService recipeService;
     private final IngredientService ingredientService;
     private final UOMService uomService;
@@ -51,7 +51,6 @@ public class IngredientController extends ErrorHandlingBaseController {
 
         //make sure we have a good id value
         RecipeCommand recipeCommand = recipeService.findCommandById(Long.valueOf(recipeId));
-        //todo raise exception if null
 
         //need to return back parent id for hidden form property
         IngredientCommand ingredientCommand = new IngredientCommand();

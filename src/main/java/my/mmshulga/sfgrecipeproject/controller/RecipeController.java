@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 
 @Slf4j
 @Controller
-public class RecipeController extends ErrorHandlingBaseController {
+public class RecipeController {
     private final RecipeService recipeService;
 
     @Autowired

@@ -24,7 +24,7 @@ import static my.mmshulga.sfgrecipeproject.utils.Utils.unboxArrayOfBytes;
 
 @Slf4j
 @Controller
-public class ImageController extends ErrorHandlingBaseController {
+public class ImageController {
     private final ImageService imageService;
     private final RecipeService recipeService;
 
